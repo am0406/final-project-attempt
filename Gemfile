@@ -30,6 +30,12 @@ gem "jbuilder"
 # Use Redis adapter to run Action Cable in production
 gem "redis", "~> 4.0"
 
+#putitng gem devise on top cuz its not working below
+
+gem "devise"
+
+gem 'dotenv-rails'
+gem 'ruby-openai', '>= 4.0.0'
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 
@@ -76,8 +82,6 @@ end
 gem "active_link_to"
 gem "appdev_support"
 gem "awesome_print"
-gem "devise"
-gem "dotenv"
 gem "faker"
 gem "htmlbeautifier"
 gem "http"

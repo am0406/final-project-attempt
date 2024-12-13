@@ -1,0 +1,22 @@
+<h1>Requirements</h1>
+
+<%= link_to "New Requirement", new_requirement_path %>
+
+<% @requirements.each do |requirement| %>
+  <hr>
+  <h2><%= requirement.name %></h2>
+  <p><%= requirement.description %></p>
+
+  <h3>Generated Meals</h3>
+  <ul>
+    <% requirement.meals.each do |meal| %>
+      <li><strong><%= meal.name %></strong>: <%= meal.instructions %></li>
+    <% end %>
+  </ul>
+
+  <p>
+    <%= link_to "Edit", edit_requirement_path(requirement) %> | 
+    <%= link_to "Delete", requirement_path(requirement), method: :delete, data: { confirm: "Are you sure?" } %> |
+    <%= link_to "Generate Meals", generate_meals_requirement_path(requirement), method: :post %>
+  </p>
+<% end %>

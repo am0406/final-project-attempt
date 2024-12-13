@@ -1,0 +1,29 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @requirement %>
+
+<h1><%= @requirement.name %></h1>
+<p><%= @requirement.description %></p>
+
+<h2>Generated Meals</h2>
+<ul>
+  <% @requirement.meals.each do |meal| %>
+    <li>
+      <strong><%= meal.name %></strong><br>
+      <%= meal.instructions %><br>
+      <%= link_to "View Meal", meal_path(meal) %>
+    </li>
+  <% end %>
+</ul>
+
+<%= link_to "Generate New Meals", generate_meals_requirement_path(@requirement), method: :post %>
+#more button stuff
+<%= link_to "Back to requirements", requirements_path %>
+
+#
+<div>
+  <%= link_to "Edit this requirement", edit_requirement_path(@requirement) %> |
+  <%= link_to "Back to requirements", requirements_path %>
+
+  <%= button_to "Destroy this requirement", @requirement, method: :delete %>
+</div>

@@ -1,0 +1,10 @@
+#for some reason I had to manually create this one
+<h1>My Saved Meals</h1>
+<% @meals.each do |meal| %>
+  <div>
+    <h2><%= link_to meal.name, meal_path(meal) %></h2>
+    <p><%= meal.instructions %></p>
+    <p>Associated Requirement: <%= meal.requirement.name %></p>
+    <%= link_to "Delete", meal_path(meal), method: :delete, data: { confirm: 'Are you sure?' } %>
+  </div>
+<% end %>

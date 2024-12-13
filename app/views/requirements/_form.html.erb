@@ -1,0 +1,24 @@
+<%= form_with(model: requirement, local: true) do |form| %>
+  <% if requirement.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(requirement.errors.count, "error") %> prohibited this requirement from being saved:</h2>
+      <ul>
+        <% requirement.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name %><br>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.label :description %><br>
+    <%= form.text_area :description %>
+  </div>
+
+  <%= form.submit "Save Requirement" %>
+<% end %>

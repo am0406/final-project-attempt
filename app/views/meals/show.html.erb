@@ -1,0 +1,13 @@
+#something is definitely wrong here
+<h1><%= @meal.name %></h1>
+<p><%= @meal.instructions %></p>
+<p><strong>Requirement:</strong> <%= @meal.requirement.name %></p>
+<%= link_to 'Back to all meals', meals_path %>
+
+<h1>All My Meals</h1>
+<% @meals.each do |meal| %>
+  <div>
+    <h2><%= meal.name %> (Req: <%= meal.requirement.name %>)</h2>
+    <p><%= meal.instructions %></p>
+  </div>
+<% end %>
