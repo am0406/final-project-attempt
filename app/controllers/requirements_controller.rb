@@ -78,7 +78,7 @@ class RequirementsController < ApplicationController
 
     raw_ai_text = response.dig("choices", 0, "message", "content") || "No response"
 
-    # Attempt JSON parse in case the response is structured JSON
+    #
     begin
       meal_data = JSON.parse(raw_ai_text)
       Meal.create!(
