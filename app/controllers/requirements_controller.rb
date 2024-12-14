@@ -1,4 +1,3 @@
-# app/controllers/requirements_controller.rb
 require 'openai'
 require 'dotenv/load'  
 
@@ -44,10 +43,19 @@ class RequirementsController < ApplicationController
     redirect_to requirements_path, notice: "Requirement deleted."
   end
 
-  # POST /requirements/:id/generate_meals
+  
   def generate_meals
     openai_generate_meals(@requirement)
-    redirect_to requirement_path(@requirement), notice: "AI meals generated!"
+    pp @resp
+    ml = Meal.create
+    ml.user_id = current_user.id
+    ml.requirement_id = @requirement.id
+    ml.instructions = @resp
+    ml.name = "meal"
+    ml.save
+
+    @meals = Meal.where({:user=> current_user.id})
+    render({ :template => "meals/index" })
   end
 
   private
@@ -61,40 +69,34 @@ class RequirementsController < ApplicationController
   end
 
   def openai_generate_meals(requirement)
-    
-    client = OpenAI::Client.new(api_key: ENV['OPENAI_API_KEY'])
+    request_headers_hash = {
+      "Authorization" => "Bearer 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",
+      "content-type" => "application/json"
+    }
 
-    
-    response = client.chat(
-      parameters: {
-        model: "gpt-3.5-turbo",
-        messages: [
-          { role: "system", content: "You are a helpful chef." },
-          { role: "user", content: "Suggest a meal for someone with: #{requirement.name}" }
-        ],
-        temperature: 0.7
-      }
-    )
+    request_body_hash = {
+      "model" => "gpt-3.5-turbo",
+      "messages" => [
+        {
+          "role" => "system",
+          "content" => "You are a helpful chef."
+        },
+        {
+          "role" => "user",
+          "content" => "Suggest a meal for someone with: #{requirement.name}"
+        }
+      ]
+    }
 
-    raw_ai_text = response.dig("choices", 0, "message", "content") || "No response"
+    request_body_json = JSON.generate(request_body_hash)
 
-    #
-    begin
-      meal_data = JSON.parse(raw_ai_text)
-      Meal.create!(
-        user: requirement.user,
-        requirement: requirement,
-        name: meal_data["name"] || "AI Suggested Meal",
-        instructions: meal_data["instructions"] || "No instructions provided."
-      )
-    rescue JSON::ParserError
-      # If GPT didn't return valid JSON, store entire string
-      Meal.create!(
-        user: requirement.user,
-        requirement: requirement,
-        name: "Unparsed AI Meal",
-        instructions: raw_ai_text
-      )
-    end
+    raw_response = HTTP.headers(request_headers_hash).post(
+      "https://api.openai.com/v1/chat/completions",
+      :body => request_body_json
+    ).to_s
+
+    parsed_response = JSON.parse(raw_response)
+
+    @resp= parsed_response["choices"][0]["message"]["content"]
   end
 end

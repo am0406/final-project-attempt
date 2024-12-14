@@ -1,6 +1,6 @@
 <h1>Requirements</h1>
 
-<%= link_to "New Requirement", new_requirement_path %>
+<h2> <%= link_to "New Requirement", new_requirement_path %> </h2>
 
 <% @requirements.each do |requirement| %>
   <hr>
@@ -20,3 +20,5 @@
     <%= link_to "Generate Meals", generate_meals_requirement_path(requirement), method: :post %>
   </p>
 <% end %>
+
+<h3> <%= link_to "Home", root_path %> </h3>

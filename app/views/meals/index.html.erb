@@ -1,4 +1,5 @@
-#for some reason I had to manually create this one
+  <%= link_to "Home", root_path %>
+
 <h1>My Saved Meals</h1>
 <% @meals.each do |meal| %>
   <div>
@@ -8,3 +9,5 @@
     <%= link_to "Delete", meal_path(meal), method: :delete, data: { confirm: 'Are you sure?' } %>
   </div>
 <% end %>
+
+  <%= link_to "Back to Requirements", requirements_path %>

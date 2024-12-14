@@ -1,7 +1,5 @@
-
 <p>Welcome to Aabir's Health & Recipe App</p>
 
-<%= link_to "Home", root_path %>
 <% if user_signed_in? %>
   <p>Hi, <%= current_user.email %>!</p>
   <%= link_to "Requirements", requirements_path %> | 
