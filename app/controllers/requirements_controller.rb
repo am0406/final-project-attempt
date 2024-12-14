@@ -69,34 +69,28 @@ class RequirementsController < ApplicationController
   end
 
   def openai_generate_meals(requirement)
+    bearer_token = ENV['OPENAI_API_KEY']  # load from .env or environment
+  
     request_headers_hash = {
-      "Authorization" => "Bearer ENV['OPENAI_API_KEY'],
+      "Authorization" => "Bearer #{bearer_token}",
       "content-type" => "application/json"
     }
-
+  
     request_body_hash = {
       "model" => "gpt-3.5-turbo",
       "messages" => [
-        {
-          "role" => "system",
-          "content" => "You are a helpful chef."
-        },
-        {
-          "role" => "user",
-          "content" => "Suggest a meal for someone with: #{requirement.name}"
-        }
+        { "role" => "system", "content" => "You are a helpful chef." },
+        { "role" => "user",   "content" => "Suggest a meal for someone with: #{requirement.name}" }
       ]
     }
-
     request_body_json = JSON.generate(request_body_hash)
-
-    raw_response = HTTP.headers(request_headers_hash).post(
-      "https://api.openai.com/v1/chat/completions",
-      :body => request_body_json
-    ).to_s
-
+  
+    raw_response = HTTP
+      .headers(request_headers_hash)
+      .post("https://api.openai.com/v1/chat/completions", :body => request_body_json)
+      .to_s
+  
     parsed_response = JSON.parse(raw_response)
-
-    @resp= parsed_response["choices"][0]["message"]["content"]
+    @resp = parsed_response.dig("choices", 0, "message", "content")
   end
 end
