@@ -4,7 +4,8 @@
   <p>Hi, <%= current_user.email %>!</p>
   <%= link_to "Requirements", requirements_path %> | 
   <%= link_to "Meals", meals_path %> | 
-  <%= link_to "Sign out", destroy_user_session_path, method: :delete %>
+  <%= link_to "Sign out", destroy_user_session_path %>
+
 <% else %>
   <%= link_to "Sign in", new_user_session_path %> or 
   <%= link_to "Sign up", new_user_registration_path %>
