@@ -70,7 +70,7 @@ class RequirementsController < ApplicationController
 
   def openai_generate_meals(requirement)
     request_headers_hash = {
-      "Authorization" => "Bearer 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",
+      "Authorization" => "Bearer ENV['OPENAI_API_KEY'],
       "content-type" => "application/json"
     }
 
