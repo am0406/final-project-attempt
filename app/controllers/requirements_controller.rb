@@ -67,10 +67,10 @@ class RequirementsController < ApplicationController
   end
 
   def openai_generate_meals(requirement)
-    # Load API key from environment variable
+
     bearer_token = ENV['OPENAI_API_KEY'] 
 
-    # Ensure API key exists before proceeding
+
     if bearer_token.nil? || bearer_token.empty?
       raise "OpenAI API key is not set. Please add it to your .env file."
     end
@@ -96,7 +96,7 @@ class RequirementsController < ApplicationController
 
     request_body_json = JSON.generate(request_body_hash)
 
-    # Make the API request
+
     raw_response = HTTP.headers(request_headers_hash).post(
       "https://api.openai.com/v1/chat/completions",
       :body => request_body_json
@@ -104,7 +104,7 @@ class RequirementsController < ApplicationController
 
     parsed_response = JSON.parse(raw_response)
 
-    # Extract the generated content from the API response
+
     @resp = parsed_response.dig("choices", 0, "message", "content")
   end
 end
