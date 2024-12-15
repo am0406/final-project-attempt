@@ -1,4 +1,4 @@
-require 'openai'
+require 'http'
 require 'dotenv/load'  
 
 class RequirementsController < ApplicationController
@@ -14,7 +14,6 @@ class RequirementsController < ApplicationController
   end
 
   def new
-    
     @requirement = current_user.requirements.build
   end
 
@@ -43,7 +42,6 @@ class RequirementsController < ApplicationController
     redirect_to requirements_path, notice: "Requirement deleted."
   end
 
-  
   def generate_meals
     openai_generate_meals(@requirement)
     pp @resp
@@ -69,28 +67,44 @@ class RequirementsController < ApplicationController
   end
 
   def openai_generate_meals(requirement)
-    bearer_token = ENV['OPENAI_API_KEY']  # load from .env or environment
-  
+    # Load API key from environment variable
+    bearer_token = ENV['OPENAI_API_KEY'] 
+
+    # Ensure API key exists before proceeding
+    if bearer_token.nil? || bearer_token.empty?
+      raise "OpenAI API key is not set. Please add it to your .env file."
+    end
+
     request_headers_hash = {
       "Authorization" => "Bearer #{bearer_token}",
-      "content-type" => "application/json"
+      "Content-Type" => "application/json"
     }
-  
+
     request_body_hash = {
       "model" => "gpt-3.5-turbo",
       "messages" => [
-        { "role" => "system", "content" => "You are a helpful chef." },
-        { "role" => "user",   "content" => "Suggest a meal for someone with: #{requirement.name}" }
+        {
+          "role" => "system",
+          "content" => "You are a helpful chef."
+        },
+        {
+          "role" => "user",
+          "content" => "Suggest a meal for someone with: #{requirement.name}"
+        }
       ]
     }
+
     request_body_json = JSON.generate(request_body_hash)
-  
-    raw_response = HTTP
-      .headers(request_headers_hash)
-      .post("https://api.openai.com/v1/chat/completions", :body => request_body_json)
-      .to_s
-  
+
+    # Make the API request
+    raw_response = HTTP.headers(request_headers_hash).post(
+      "https://api.openai.com/v1/chat/completions",
+      :body => request_body_json
+    ).to_s
+
     parsed_response = JSON.parse(raw_response)
+
+    # Extract the generated content from the API response
     @resp = parsed_response.dig("choices", 0, "message", "content")
   end
 end
